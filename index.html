@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FractArt Controller</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+  <div class="container mx-auto p-6 space-y-8">
+    <!-- Título -->
+    <header class="text-center">
+      <h1 class="text-4xl font-bold">Welcome FractArt</h1>
+    </header>
+
+    <!-- Información del proyector -->
+    <section class="bg-white shadow-md rounded-lg p-6 space-y-6">
+      <!-- Imagen del proyector y estado -->
+      <div class="flex items-center justify-between">
+        <div class="space-y-2">
+          <h2 class="text-2xl font-semibold">FractArt Projector</h2>
+          <p id="projector-status" class="text-gray-600">Estado: <span class="font-bold text-green-600">Apagado</span></p>
+        </div>
+        <img src="C:/Users/cesar/Documents/fract/proyector.png" alt="Proyector" class="w-24 h-24 rounded-lg shadow-lg">
+      </div>
+
+      <!-- Indicador de batería -->
+      <div>
+        <label class="block text-gray-600 text-sm mb-2">Batería</label>
+        <div class="flex items-center space-x-4">
+          <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+            <div class="bg-green-500 h-full rounded-full" style="width: 80%;"></div>
+          </div>
+          <span class="text-gray-600 font-semibold">80%</span>
+        </div>
+      </div>
+
+      <!-- Botón de encendido con hover -->
+      <div class="flex items-center justify-center">
+        <button id="power-button" class="bg-gray-200 hover:bg-green-500 text-gray-900 px-6 py-3 rounded-full flex items-center transition">
+          <img src="C:/Users/cesar/Documents/fract/systemshutdown_104277.svg" alt="Encender/Apagar" class="w-8 h-8 mr-2">
+          <span id="power-text">Encender</span>
+        </button>
+      </div>
+
+      <!-- Botón de transmitir -->
+      <div class="flex items-center justify-center mt-6">
+        <button id="connect-button" class="bg-blue-200 hover:bg-blue-500 text-white px-6 py-3 rounded-full flex items-center transition">
+          <span id="connect-text">Buscar y Conectar</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Ajustes del fractal -->
+    <section class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-2xl font-semibold mb-4">Ajustar Fractal</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Zoom Slider -->
+        <div>
+          <label class="block text-sm mb-2 text-gray-600">Zoom</label>
+          <input type="range" id="zoom-slider" min="1" max="10" step="0.1" value="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none focus:outline-none">
+          <p id="zoom-value" class="mt-2 text-sm text-gray-400">Zoom: 1</p>
+        </div>
+        <!-- Color Picker -->
+        <div>
+          <label class="block text-sm mb-2 text-gray-600">Color</label>
+          <input type="color" id="color-picker" class="w-full h-10 bg-gray-100 border border-gray-300 rounded-md">
+        </div>
+      </div>
+    </section>
+
+    <!-- Opciones de fractales -->
+    <section class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-2xl font-semibold mb-4">Seleccionar Fractal</h2>
+      <select id="fractal-selector" class="w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
+        <option value="mandelbrot">Mandelbrot</option>
+        <option value="julia">Julia</option>
+        <option value="sierpinski">Sierpinski</option>
+        <option value="dragon">Curva del dragón</option>
+      </select>
+    </section>
+
+    <!-- Generador de fractales -->
+    <section class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-2xl font-semibold mb-4">Generador de Fractales</h2>
+      <div class="relative">
+        <canvas id="fractal-canvas" class="w-full h-64 bg-gray-700 rounded-md"></canvas>
+        <p class="absolute bottom-2 right-2 text-gray-400 text-sm">Zoom: <span id="zoom-label">1</span></p>
+      </div>
+    </section>
+
+    <!-- Tiempo de duración -->
+    <section class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-2xl font-semibold mb-4">Tiempo de duración</h2>
+      <input type="number" id="duration" placeholder="Duración en horas" class="w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
+      <div id="time-counter" class="text-sm text-gray-600 mt-2"></div>
+    </section>
+
+    <!-- Modo de presentación -->
+    <section class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-2xl font-semibold mb-4">Modo Presentación</h2>
+      <label class="inline-flex items-center">
+        <input type="checkbox" id="presentation-mode" class="form-checkbox h-5 w-5 text-blue-600">
+        <span class="ml-2 text-gray-600">Cambiar automáticamente entre fractales</span>
+      </label>
+    </section>
+  </div>
+
+  <script>
+    // Botón de encendido
+    const powerButton = document.getElementById('power-button');
+    const powerText = document.getElementById('power-text');
+    const projectorStatus = document.getElementById('projector-status');
+    let isOn = false;
+
+    powerButton.addEventListener('click', () => {
+      isOn = !isOn;
+      powerButton.classList.toggle('bg-green-500', isOn);
+      powerButton.classList.toggle('bg-gray-200', !isOn);
+      powerText.textContent = isOn ? 'Apagar' : 'Encender';
+      projectorStatus.innerHTML = `Estado: <span class="${isOn ? 'text-green-600' : 'text-red-600'} font-bold">${isOn ? 'Encendido' : 'Apagado'}</span>`;
+    });
+
+    // Simulación de conexión
+    const connectButton = document.getElementById('connect-button');
+    const connectText = document.getElementById('connect-text');
+
+    connectButton.addEventListener('click', () => {
+      connectText.textContent = 'Buscando...';
+      connectButton.disabled = true;
+
+      // Simulamos la búsqueda de dispositivos
+      setTimeout(() => {
+        connectText.textContent = 'Conectando...';
+
+        setTimeout(() => {
+          // Simulación de conexión exitosa
+          connectText.textContent = 'Conectado';
+          connectButton.classList.toggle('bg-blue-500', true);
+          connectButton.classList.toggle('bg-blue-200', false);
+          connectButton.disabled = false;
+
+          // Cambiar estado del proyector a encendido
+          if (!isOn) {
+            powerButton.click(); // Encender el proyector si no está encendido
+          }
+        }, 2000); // Simula el tiempo de conexión
+      }, 2000); // Simula el tiempo de búsqueda
+    });
+
+    // Zoom Slider
+    const zoomSlider = document.getElementById('zoom-slider');
+    const zoomValue = document.getElementById('zoom-value');
+    const zoomLabel = document.getElementById('zoom-label');
+    zoomSlider.addEventListener('input', () => {
+      const zoom = zoomSlider.value;
+      zoomValue.textContent = `Zoom: ${zoom}`;
+      zoomLabel.textContent = zoom;
+      drawFractal(zoom); // Actualizar el fractal con el nuevo zoom
+    });
+
+    // Generador de fractales
+    const canvas = document.getElementById('fractal-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+
+    function drawFractal() {
+        const fractalType = document.getElementById('fractal-selector').value;
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar canvas
+      
+        if (fractalType === 'mandelbrot') {
+          drawMandelbrot();
+        } else if (fractalType === 'julia') {
+          drawJulia();
+        } else if (fractalType === 'sierpinski') {
+          drawSierpinski();
+        } else if (fractalType === 'dragon') {
+          drawDragon();
+        }
+      }
+      
+
+   // Función para dibujar el conjunto Mandelbrot
+function drawMandelbrot() {
+    const width = canvas.width;
+    const height = canvas.height;
+    const maxIterations = 1000;
+    const zoom = parseFloat(zoomSlider.value);
+    const offsetX = 0.5;
+    const offsetY = 0;
+  
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        let zx = 1.5 * (x - width / 2) / (0.5 * zoom * width) + offsetX;
+        let zy = (y - height / 2) / (0.5 * zoom * height) + offsetY;
+        let i = maxIterations;
+        while (zx * zx + zy * zy < 4 && i > 0) {
+          let temp = zx * zx - zy * zy + 0.355;
+          zy = 2.0 * zx * zy + 0.355;
+          zx = temp;
+          i--;
+        }
+        const color = i === maxIterations ? 0 : (i * 255 / maxIterations);
+        ctx.fillStyle = `rgb(${color}, ${color}, ${color})`;
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  }
+  
+  // Función para dibujar el conjunto Julia
+  function drawJulia() {
+    const width = canvas.width;
+    const height = canvas.height;
+    const maxIterations = 1000;
+    const zoom = parseFloat(zoomSlider.value);
+    const offsetX = 0;
+    const offsetY = 0;
+    const cRe = -0.8; // Parte real de c
+    const cIm = 0.156; // Parte imaginaria de c
+  
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        let zx = 1.5 * (x - width / 2) / (0.5 * zoom * width) + offsetX;
+        let zy = (y - height / 2) / (0.5 * zoom * height) + offsetY;
+        let i = maxIterations;
+        while (zx * zx + zy * zy < 4 && i > 0) {
+          let temp = zx * zx - zy * zy + cRe;
+          zy = 2.0 * zx * zy + cIm;
+          zx = temp;
+          i--;
+        }
+        const color = i === maxIterations ? 0 : (i * 255 / maxIterations);
+        ctx.fillStyle = `rgb(${color}, ${color}, ${color})`;
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  }
+  
+  // Función para dibujar el triángulo de Sierpinski
+  function drawSierpinski() {
+    const width = canvas.width;
+    const height = canvas.height;
+    ctx.fillStyle = 'black';
+    
+    function sierpinski(x1, y1, x2, y2, x3, y3, depth) {
+      if (depth === 0) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.lineTo(x3, y3);
+        ctx.closePath();
+        ctx.fill();
+      } else {
+        const mx1 = (x1 + x2) / 2;
+        const my1 = (y1 + y2) / 2;
+        const mx2 = (x2 + x3) / 2;
+        const my2 = (y2 + y3) / 2;
+        const mx3 = (x3 + x1) / 2;
+        const my3 = (y3 + y1) / 2;
+        sierpinski(x1, y1, mx1, my1, mx3, my3, depth - 1);
+        sierpinski(x2, y2, mx1, my1, mx2, my2, depth - 1);
+        sierpinski(x3, y3, mx2, my2, mx3, my3, depth - 1);
+      }
+    }
+  
+    const size = Math.min(width, height);
+    sierpinski(10, height - 10, width - 10, height - 10, width / 2, 10, 6);
+  }
+  
+  // Función para dibujar la curva del Dragón
+  function drawDragon() {
+    const width = canvas.width;
+    const height = canvas.height;
+    ctx.fillStyle = 'black';
+    ctx.beginPath();
+    const n = 12; // Número de iteraciones
+    let x = width / 2;
+    let y = height / 2;
+    let angle = 0;
+    let dir = 1;
+    
+    for (let i = 0; i < (1 << n); i++) {
+      ctx.lineTo(x, y);
+      angle += dir * Math.PI / 2;
+      x += Math.cos(angle);
+      y += Math.sin(angle);
+      dir = -dir;
+    }
+    
+    ctx.stroke();
+  }
+  
+ 
+   
+    // Inicializar el fractal cuando se selecciona
+    fractalSelector.addEventListener('change', drawFractal);
+
+    // Dibuja el fractal inicial
+    drawFractal();
+  </script>
+</body>
+</html>
