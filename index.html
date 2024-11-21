@@ -68,8 +68,27 @@
           <label class="block text-sm mb-2 text-gray-600">Color</label>
           <input type="color" id="color-picker" class="w-full h-10 bg-gray-100 border border-gray-300 rounded-md">
         </div>
+
+      </div>
+        <div class="grid grid-cols-1 gap-4 mt-6"> <!-- Cambié grid-cols-3 a grid-cols-1 -->
+          <!-- Parte Real -->
+          <div>
+            <label class="block text-sm mb-2 text-gray-600">Parte Real (c)</label>
+            <input type="number" id="real-part" step="0.01" class="w-full p-2 bg-gray-100 border border-gray-300 rounded-md" value="-0.7">
+          </div>
+          <!-- Parte Imaginaria -->
+          <div>
+            <label class="block text-sm mb-2 text-gray-600">Parte Imaginaria (c)</label>
+            <input type="number" id="imaginary-part" step="0.01" class="w-full p-2 bg-gray-100 border border-gray-300 rounded-md" value="0.27015">
+          </div>
+          <!-- Iteraciones -->
+          <div>
+            <label class="block text-sm mb-2 text-gray-600">Número de Iteraciones</label>
+            <input type="number" id="iterations" class="w-full p-2 bg-gray-100 border border-gray-300 rounded-md" value="1000">
+          </div>
       </div>
     </section>
+
 
     <!-- Opciones de fractales -->
     <section class="bg-white shadow-md rounded-lg p-6">
@@ -89,7 +108,13 @@
         <canvas id="fractal-canvas" class="w-full h-64 bg-gray-700 rounded-md"></canvas>
         <p class="absolute bottom-2 right-2 text-gray-400 text-sm">Zoom: <span id="zoom-label">1</span></p>
       </div>
+      <div class="flex items-center justify-center mt-4">
+        <button id="generate-button" class="bg-purple-500 hover:bg-purple-700 text-white px-6 py-3 rounded-full flex items-center transition">
+          Generar Fractal
+        </button>
+      </div>
     </section>
+
 
     <!-- Tiempo de duración -->
     <section class="bg-white shadow-md rounded-lg p-6">
@@ -167,139 +192,206 @@
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
 
-    function drawFractal() {
-        const fractalType = document.getElementById('fractal-selector').value;
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar canvas
-      
-        if (fractalType === 'mandelbrot') {
-          drawMandelbrot();
-        } else if (fractalType === 'julia') {
-          drawJulia();
-        } else if (fractalType === 'sierpinski') {
-          drawSierpinski();
-        } else if (fractalType === 'dragon') {
-          drawDragon();
-        }
-      }
-      
+    const colorPicker = document.getElementById('color-picker');
+    const fractalSelector = document.getElementById('fractal-selector');
+    const generateButton = document.getElementById('generate-button');
+    const realPartInput = document.getElementById('real-part');
+    const imaginaryPartInput = document.getElementById('imaginary-part');
+    const iterationsInput = document.getElementById('iterations');
 
-   // Función para dibujar el conjunto Mandelbrot
-function drawMandelbrot() {
-    const width = canvas.width;
-    const height = canvas.height;
-    const maxIterations = 1000;
-    const zoom = parseFloat(zoomSlider.value);
-    const offsetX = 0.5;
-    const offsetY = 0;
-  
-    for (let x = 0; x < width; x++) {
-      for (let y = 0; y < height; y++) {
-        let zx = 1.5 * (x - width / 2) / (0.5 * zoom * width) + offsetX;
-        let zy = (y - height / 2) / (0.5 * zoom * height) + offsetY;
-        let i = maxIterations;
-        while (zx * zx + zy * zy < 4 && i > 0) {
-          let temp = zx * zx - zy * zy + 0.355;
-          zy = 2.0 * zx * zy + 0.355;
-          zx = temp;
-          i--;
-        }
-        const color = i === maxIterations ? 0 : (i * 255 / maxIterations);
-        ctx.fillStyle = `rgb(${color}, ${color}, ${color})`;
-        ctx.fillRect(x, y, 1, 1);
+    // Cambiar el evento del selector de fractales
+    fractalSelector.addEventListener('change', () => {
+      const zoom = parseFloat(zoomSlider.value);
+      const baseColor = colorPicker.value;
+      const realPart = parseFloat(realPartInput.value);
+      const imaginaryPart = parseFloat(imaginaryPartInput.value);
+      const iterations = parseInt(iterationsInput.value, 10);
+      drawFractal(fractalSelector.value, zoom, baseColor, realPart, imaginaryPart, iterations);
+    });
+
+    // Dibuja el fractal inicial
+    drawFractal('mandelbrot', 1, '#0000ff', -0.7, 0.27015, 1000);
+
+
+
+    generateButton.addEventListener('click', () => {
+      const zoom = parseFloat(zoomSlider.value);
+      const baseColor = colorPicker.value; // Color seleccionado por el usuario
+      const fractalType = fractalSelector.value;
+      const realPart = parseFloat(realPartInput.value);
+      const imaginaryPart = parseFloat(imaginaryPartInput.value);
+      const iterations = parseInt(iterationsInput.value, 10);
+
+      drawFractal(fractalType, zoom, baseColor, realPart, imaginaryPart, iterations);
+    });
+
+    function hexToRgb(hex) {
+      const bigint = parseInt(hex.slice(1), 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return { r, g, b };
+    }
+
+
+    function getColor(iteration, maxIterations, baseColor) {
+      const { r, g, b } = hexToRgb(baseColor); // Convertimos el color base a RGB
+      const t = iteration / maxIterations; // Proporción de iteraciones completadas
+      const alpha = Math.pow(t, 0.5); // Opcional: ajustar la progresión visual
+
+      // Interpolamos los valores de color y retornamos en formato RGBA
+      return `rgba(${Math.floor(r * t)}, ${Math.floor(g * t)}, ${Math.floor(b * t)}, ${alpha})`;
+    }
+
+
+    function drawFractal(type, zoom, color, realPart, imaginaryPart, iterations) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el lienzo
+      ctx.fillStyle = color; // Establecer el color seleccionado
+
+      if (type === 'mandelbrot') {
+        drawMandelbrot(zoom, color, realPart, imaginaryPart, iterations);
+      } else if (type === 'julia') {
+        drawJulia(zoom, color, realPart, imaginaryPart, iterations);
+      } else if (type === 'sierpinski') {
+        drawSierpinski(color); // No necesita zoom
+      } else if (type === 'dragon') {
+        drawDragon(color); // No necesita zoom
       }
     }
-  }
-  
-  // Función para dibujar el conjunto Julia
-  function drawJulia() {
-    const width = canvas.width;
-    const height = canvas.height;
-    const maxIterations = 1000;
-    const zoom = parseFloat(zoomSlider.value);
-    const offsetX = 0;
-    const offsetY = 0;
-    const cRe = -0.8; // Parte real de c
-    const cIm = 0.156; // Parte imaginaria de c
-  
-    for (let x = 0; x < width; x++) {
-      for (let y = 0; y < height; y++) {
-        let zx = 1.5 * (x - width / 2) / (0.5 * zoom * width) + offsetX;
-        let zy = (y - height / 2) / (0.5 * zoom * height) + offsetY;
-        let i = maxIterations;
-        while (zx * zx + zy * zy < 4 && i > 0) {
-          let temp = zx * zx - zy * zy + cRe;
-          zy = 2.0 * zx * zy + cIm;
-          zx = temp;
-          i--;
+
+
+    function drawMandelbrot(zoom, baseColor, realPart, imaginaryPart, iterations) {
+      const maxIterations = iterations;
+      const width = canvas.width;
+      const height = canvas.height;
+
+      for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+          const cRe = 1.5 * (x - width / 2) / (0.5 * zoom * width);
+          const cIm = (y - height / 2) / (0.5 * zoom * height);
+
+          let zx = 0, zy = 0;
+          let iteration = 0;
+
+          while (zx * zx + zy * zy < 4 && iteration < maxIterations) {
+            const temp = zx * zx - zy * zy + cRe;
+            zy = 2.0 * zx * zy + cIm;
+            zx = temp;
+            iteration++;
+          }
+
+          // Asignar colores según el resultado
+          if (iteration === maxIterations) {
+            // Puntos dentro del conjunto: usa el color base
+            ctx.fillStyle = baseColor;
+          } else {
+            // Puntos fuera del conjunto: usa un degradado
+            ctx.fillStyle = getColor(iteration, maxIterations, baseColor);
+          }
+
+          ctx.fillRect(x, y, 1, 1);
         }
-        const color = i === maxIterations ? 0 : (i * 255 / maxIterations);
-        ctx.fillStyle = `rgb(${color}, ${color}, ${color})`;
-        ctx.fillRect(x, y, 1, 1);
       }
     }
-  }
-  
-  // Función para dibujar el triángulo de Sierpinski
-  function drawSierpinski() {
-    const width = canvas.width;
-    const height = canvas.height;
-    ctx.fillStyle = 'black';
-    
-    function sierpinski(x1, y1, x2, y2, x3, y3, depth) {
+
+
+
+
+    function drawJulia(zoom, baseColor, realPart, imaginaryPart, iterations) {
+      const maxIterations = iterations;
+      const width = canvas.width;
+      const height = canvas.height;
+
+      for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+          // Coordenadas iniciales del plano complejo
+          let zx = 1.5 * (x - width / 2) / (0.5 * zoom * width);
+          let zy = (y - height / 2) / (0.5 * zoom * height);
+
+          const cRe = realPart; // c es constante (real)
+          const cIm = imaginaryPart; // c es constante (imaginario)
+
+          let iteration = 0;
+
+          while (zx * zx + zy * zy < 4 && iteration < maxIterations) {
+            let temp = zx * zx - zy * zy + cRe;
+            zy = 2.0 * zx * zy + cIm;
+            zx = temp;
+            iteration++;
+          }
+
+          ctx.fillStyle = iteration === maxIterations ? 'black' : getColor(iteration, maxIterations, baseColor);
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+    }
+
+
+    function drawSierpinski(color) {
+      // Dibujar el fractal de Sierpinski (triángulo)
+      ctx.fillStyle = color;
+      drawTriangle(0, canvas.height, canvas.width, canvas.height, canvas.width / 2, 0, 7); // Recursión
+    }
+
+    function drawTriangle(x1, y1, x2, y2, x3, y3, depth) {
       if (depth === 0) {
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.lineTo(x3, y3);
-        ctx.closePath();
         ctx.fill();
       } else {
-        const mx1 = (x1 + x2) / 2;
-        const my1 = (y1 + y2) / 2;
-        const mx2 = (x2 + x3) / 2;
-        const my2 = (y2 + y3) / 2;
-        const mx3 = (x3 + x1) / 2;
-        const my3 = (y3 + y1) / 2;
-        sierpinski(x1, y1, mx1, my1, mx3, my3, depth - 1);
-        sierpinski(x2, y2, mx1, my1, mx2, my2, depth - 1);
-        sierpinski(x3, y3, mx2, my2, mx3, my3, depth - 1);
+        let mx1 = (x1 + x2) / 2;
+        let my1 = (y1 + y2) / 2;
+        let mx2 = (x2 + x3) / 2;
+        let my2 = (y2 + y3) / 2;
+        let mx3 = (x3 + x1) / 2;
+        let my3 = (y3 + y1) / 2;
+        
+        drawTriangle(x1, y1, mx1, my1, mx3, my3, depth - 1);
+        drawTriangle(mx1, my1, x2, y2, mx2, my2, depth - 1);
+        drawTriangle(mx3, my3, mx2, my2, x3, y3, depth - 1);
       }
     }
-  
-    const size = Math.min(width, height);
-    sierpinski(10, height - 10, width - 10, height - 10, width / 2, 10, 6);
-  }
-  
-  // Función para dibujar la curva del Dragón
-  function drawDragon() {
-    const width = canvas.width;
-    const height = canvas.height;
-    ctx.fillStyle = 'black';
-    ctx.beginPath();
-    const n = 12; // Número de iteraciones
-    let x = width / 2;
-    let y = height / 2;
+
+    function drawDragon(color) {
+    const length = 20; // Aumenté la longitud de los segmentos
+    const iterations = 12; // Mantén un número razonable de iteraciones (entre 10 y 15)
+    const angleStep = Math.PI / 2; // Paso de 90 grados por iteración
+    let points = [{ x: canvas.width / 2, y: canvas.height / 2 }]; // Centrado en el lienzo
     let angle = 0;
-    let dir = 1;
-    
-    for (let i = 0; i < (1 << n); i++) {
-      ctx.lineTo(x, y);
-      angle += dir * Math.PI / 2;
-      x += Math.cos(angle);
-      y += Math.sin(angle);
-      dir = -dir;
+
+    // Generar los puntos para la curva
+    for (let i = 0; i < iterations; i++) {
+      let newPoints = [];
+      for (let j = points.length - 1; j >= 0; j--) {
+        let lastPoint = points[j];
+        let newPoint = {
+          x: lastPoint.x + length * Math.cos(angle),
+          y: lastPoint.y + length * Math.sin(angle)
+        };
+        newPoints.push(newPoint);
+        angle += angleStep; // Cambiar el ángulo para el giro
+      }
+      points = points.concat(newPoints);
     }
-    
+
+    // Dibujar la curva
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
     ctx.stroke();
   }
-  
- 
-   
-    // Inicializar el fractal cuando se selecciona
-    fractalSelector.addEventListener('change', drawFractal);
 
-    // Dibuja el fractal inicial
-    drawFractal();
-  </script>
-</body>
-</html>
+
+        // Inicializar el fractal cuando se selecciona
+      fractalSelector.addEventListener('change', drawFractal);
+
+      // Dibuja el fractal inicial
+      drawFractal();
+    </script>
+  </body>
+  </html>

@@ -3,6 +3,9 @@ const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 const zoomSlider = d3.select("#zoom-slider");
 const zoomScale = d3.scaleLinear().domain([100, 1000]).range([0, 200]);
+const realPartInput = document.getElementById('real-part');
+const imaginaryPartInput = document.getElementById('imaginary-part');
+const generateFractalButton = document.getElementById('generate-fractal');
 
 // Actualización del color
 const colorPicker = document.getElementById("color-picker");
@@ -33,3 +36,4 @@ presentationMode.addEventListener("change", (e) => {
 document.querySelector("button").addEventListener("click", () => {
   console.log("Iniciando transmisión...");
 });
+
