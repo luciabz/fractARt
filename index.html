@@ -97,7 +97,6 @@
         <option value="mandelbrot">Mandelbrot</option>
         <option value="julia">Julia</option>
         <option value="sierpinski">Sierpinski</option>
-        <option value="dragon">Curva del dragón</option>
       </select>
     </section>
 
@@ -254,8 +253,6 @@
         drawJulia(zoom, color, realPart, imaginaryPart, iterations);
       } else if (type === 'sierpinski') {
         drawSierpinski(color); // No necesita zoom
-      } else if (type === 'dragon') {
-        drawDragon(color); // No necesita zoom
       }
     }
 
@@ -339,52 +336,21 @@
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.lineTo(x3, y3);
+        ctx.closePath();
         ctx.fill();
       } else {
-        let mx1 = (x1 + x2) / 2;
-        let my1 = (y1 + y2) / 2;
-        let mx2 = (x2 + x3) / 2;
-        let my2 = (y2 + y3) / 2;
-        let mx3 = (x3 + x1) / 2;
-        let my3 = (y3 + y1) / 2;
-        
+        const mx1 = (x1 + x2) / 2;
+        const my1 = (y1 + y2) / 2;
+        const mx2 = (x2 + x3) / 2;
+        const my2 = (y2 + y3) / 2;
+        const mx3 = (x1 + x3) / 2;
+        const my3 = (y1 + y3) / 2;
+
         drawTriangle(x1, y1, mx1, my1, mx3, my3, depth - 1);
         drawTriangle(mx1, my1, x2, y2, mx2, my2, depth - 1);
         drawTriangle(mx3, my3, mx2, my2, x3, y3, depth - 1);
       }
     }
-
-    function drawDragon(color) {
-    const length = 20; // Aumenté la longitud de los segmentos
-    const iterations = 12; // Mantén un número razonable de iteraciones (entre 10 y 15)
-    const angleStep = Math.PI / 2; // Paso de 90 grados por iteración
-    let points = [{ x: canvas.width / 2, y: canvas.height / 2 }]; // Centrado en el lienzo
-    let angle = 0;
-
-    // Generar los puntos para la curva
-    for (let i = 0; i < iterations; i++) {
-      let newPoints = [];
-      for (let j = points.length - 1; j >= 0; j--) {
-        let lastPoint = points[j];
-        let newPoint = {
-          x: lastPoint.x + length * Math.cos(angle),
-          y: lastPoint.y + length * Math.sin(angle)
-        };
-        newPoints.push(newPoint);
-        angle += angleStep; // Cambiar el ángulo para el giro
-      }
-      points = points.concat(newPoints);
-    }
-
-    // Dibujar la curva
-    ctx.strokeStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    ctx.stroke();
-  }
 
 
         // Inicializar el fractal cuando se selecciona
@@ -392,6 +358,54 @@
 
       // Dibuja el fractal inicial
       drawFractal();
+
+      let presentationInterval;
+
+    // Agregar el evento para activar/desactivar el modo de presentación
+    document.getElementById('presentation-mode').addEventListener('change', (e) => {
+      if (e.target.checked) {
+        presentationInterval = setInterval(() => {
+          const fractals = ['mandelbrot', 'julia', 'sierpinski'];
+          const current = fractalSelector.value;
+          const nextIndex = (fractals.indexOf(current) + 1) % fractals.length;
+
+          // Cambiar al siguiente fractal
+          fractalSelector.value = fractals[nextIndex];
+
+          // Obtener el color seleccionado por el usuario
+          const selectedColor = document.getElementById('color-picker').value;
+
+          // Generar el fractal automáticamente con el color seleccionado
+          generateFractal(fractals[nextIndex], selectedColor);
+        }, 5000); // Cambiar cada 5 segundos
+      } else {
+        clearInterval(presentationInterval);
+      }
+    });
+
+    // Generar fractal según el tipo seleccionado y el color
+    function generateFractal(type, color) {
+      const zoom = 1; 
+      let realPart = 0;
+      let imaginaryPart = 0;
+      const iterations = 100;
+
+      if (type === 'julia') {
+        realPart = -0.7; // Ajusta valores predeterminados
+        imaginaryPart = 0.27015;
+      }
+
+      drawFractal(type, zoom, color, realPart, imaginaryPart, iterations);
+    }
+
+
+
+    // Escuchar cambios en el selector y generar el fractal automáticamente
+    fractalSelector.addEventListener('change', () => {
+      const selectedFractal = fractalSelector.value;
+      generateFractal(selectedFractal);
+    });
+
     </script>
   </body>
   </html>
