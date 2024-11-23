@@ -258,38 +258,51 @@
 
 
     function drawMandelbrot(zoom, baseColor, realPart, imaginaryPart, iterations) {
-      const maxIterations = iterations;
-      const width = canvas.width;
-      const height = canvas.height;
+        const maxIterations = iterations;
+        const width = canvas.width;
+        const height = canvas.height;
 
-      for (let x = 0; x < width; x++) {
-        for (let y = 0; y < height; y++) {
-          const cRe = 1.5 * (x - width / 2) / (0.5 * zoom * width);
-          const cIm = (y - height / 2) / (0.5 * zoom * height);
+        // Centramos el fractal en el medio del canvas
+        const centerX = width / 2;
+        const centerY = height / 2;
 
-          let zx = 0, zy = 0;
-          let iteration = 0;
+        // Escala del conjunto de Mandelbrot
+        const scaleX = 3 / zoom;  // Reduce el valor de escala para hacerlo más grande
+        const scaleY = 2.0 / zoom;  // Ajusta este valor según cómo quieras la proporción
 
-          while (zx * zx + zy * zy < 4 && iteration < maxIterations) {
-            const temp = zx * zx - zy * zy + cRe;
-            zy = 2.0 * zx * zy + cIm;
-            zx = temp;
-            iteration++;
-          }
+        for (let x = 0; x < width; x++) {
+            for (let y = 0; y < height; y++) {
+                // Convertimos las coordenadas pixel a coordenadas complejas
+                const cRe = (x - centerX) / (width / 3) * scaleX + realPart;
+                const cIm = (y - centerY) / (height / 2.0) * scaleY + imaginaryPart;
 
-          // Asignar colores según el resultado
-          if (iteration === maxIterations) {
-            // Puntos dentro del conjunto: usa el color base
-            ctx.fillStyle = baseColor;
-          } else {
-            // Puntos fuera del conjunto: usa un degradado
-            ctx.fillStyle = getColor(iteration, maxIterations, baseColor);
-          }
+                let zx = 0, zy = 0;
+                let iteration = 0;
 
-          ctx.fillRect(x, y, 1, 1);
+                // Iteración para calcular el conjunto de Mandelbrot
+                while (zx * zx + zy * zy < 4 && iteration < maxIterations) {
+                    const temp = zx * zx - zy * zy + cRe;
+                    zy = 2.0 * zx * zy + cIm;
+                    zx = temp;
+                    iteration++;
+                }
+
+                // Asignar colores según el resultado
+                if (iteration === maxIterations) {
+                    // Puntos dentro del conjunto: usa el color base
+                    ctx.fillStyle = baseColor;
+                } else {
+                    // Puntos fuera del conjunto: usa un degradado
+                    ctx.fillStyle = getColor(iteration, maxIterations, baseColor);
+                }
+
+                // Dibujamos un punto en las coordenadas correspondientes
+                ctx.fillRect(x, y, 1, 1);
+            }
         }
-      }
     }
+
+
 
 
 
