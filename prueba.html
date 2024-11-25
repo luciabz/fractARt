@@ -19,9 +19,9 @@
         }
     </style>
 </head>
-<body class="bg-gray-700 text-white">
+<body class="bg-gray-900 text-white">
     <!-- Login Screen -->
-    <div id="loginScreen" class="screen active w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4">
+    <div id="loginScreen" class="screen active w-72 rounded-lg p-4 mx-auto mt-4 ">
         <div class="flex justify-center items-center mb-4">
             <h1 class="text-2xl font-bold">FractArt</h1>
         </div>
@@ -40,7 +40,7 @@
     </div>
 
     <!-- Welcome Screen -->
-    <div id="welcomeScreen" class="screen w-72 bg-gray-800 rounded-lg p-4 mx-auto mt-4 ">
+    <div id="welcomeScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4 ">
         <div class="flex justify-between items-center mb-4 ">
            
             <h1 class="text-xl font-bold">Bienvenido, Tom</h1>
@@ -86,7 +86,7 @@
     </div>
 
     <!-- First Screen -->
-    <div id="securityScreen" class="screen w-80 bg-gray-800 rounded-lg p-6 mx-auto mt-4">
+    <div id="securityScreen" class="screen w-80 bg-gray-900 rounded-lg p-6 mx-auto mt-4">
         <div class="flex justify-between items-center mb-4">
             <i class="fas fa-arrow-left text-xl hover:text-blue-600 transition-all duration-300" onclick="showScreen('welcomeScreen')"></i>
            
@@ -260,7 +260,7 @@
     </div>
 
     <!-- Second Screen -->
-    <div id="accessControlScreen" class="screen w-72 bg-gray-800 rounded-lg p-4 mx-auto mt-4">
+    <div id="accessControlScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4">
         <div class="flex justify-between items-center mb-4">
             <i class="fas fa-arrow-left text-xl hover:text-blue-600 transition-all duration-300" onclick="showScreen('welcomeScreen')"></i>
             <h1 class="text-xl font-bold">Generar Fractal</h1>
@@ -270,9 +270,9 @@
         <div class="bg-gray-700 shadow-md rounded-lg p-4 mb-6 mt-3 shadow">
             <h2 class="text-xl font-bold text-center">Selecciona tu Fractal</h2>
             <select id="fractal-selector" class="w-full p-2 mt-2 bg-gray-800 border border-gray-600 rounded-md">
-              <option value="mandelbrot">Mandelbrot</option>
-              <option value="julia">Julia</option>
-              <option value="sierpinski">sierpinski</option>
+              <option value="mandelbrot">Nebulosa</option>
+              <option value="julia">Flores de Cristal</option>
+              <option value="sierpinski">El portal Infinito</option>
             </select>
           </div>
       
@@ -297,7 +297,7 @@
     </div>
 
     <!-- Third Screen -->
-    <div id="lightingSystemScreen" class="screen w-72 bg-gray-800 rounded-lg p-4 mx-auto mt-4">
+    <div id="lightingSystemScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4">
         <div class="flex justify-between items-center mb-4">
             <i class="fas fa-arrow-left text-xl hover:text-blue-600 transition-all duration-300" onclick="showScreen('welcomeScreen')"></i>
             <h1 class="text-xl font-bold">Proyeccion del Fractal</h1>
@@ -366,7 +366,7 @@
 
 
     <!-- Fourth Screen -->
-    <div id="climateControlScreen" class="screen w-72 bg-gray-800 rounded-lg p-4 mx-auto mt-4">
+    <div id="climateControlScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4">
         <div class="flex justify-between items-center mb-4">
             <i class="fas fa-arrow-left text-xl" onclick="showScreen('welcomeScreen')"></i>
             <h1 class="text-xl font-bold">Climate Control</h1>
@@ -386,13 +386,13 @@
     </div>
 
     <!-- Fifth Screen -->
-    <div id="multimediaScreen" class="screen w-72 bg-gray-800 rounded-lg p-4 mx-auto mt-4">
+    <div id="multimediaScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4  ">
         <div class="flex justify-between items-center mb-4">
             <i class="fas fa-arrow-left text-xl hover:text-blue-600 transition-all duration-300" onclick="showScreen('welcomeScreen')"></i>
             <h1 class="text-xl font-bold">Modo Presentación</h1>
             <i class="fas fa-ellipsis-v text-xl hover:text-blue-600 transition-all duration-300"></i>
         </div>
-        <div class="bg-gray-700 shadow-md rounded-lg mb-6 mt-3 shadow">
+        <div class="bg-gray-700 shadow-md rounded-lg mb-6 mt-3 shadow h-96">
             <h2 class="text-sm font-bold text-center ">¿Deseas habilitar el cambio automático entre fractales?</h2>
             <div class="flex justify-around">
                 <button class="bg-green-500 mt-3 mb-3 text-white px-6 py-3 text-lg font-semibold rounded-lg shadow-lg transform transition-all duration-300 hover:bg-green-600 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-300">
@@ -412,7 +412,7 @@
 
 
     <!-- Sixth Screen -->
-    <div id="curtainsScreen" class="screen w-72 bg-gray-800 rounded-lg p-4 mx-auto mt-4">
+    <div id="curtainsScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4">
         <div class="flex justify-between items-center mb-4">
             <i class="fas fa-arrow-left text-xl" onclick="showScreen('welcomeScreen')"></i>
             <h1 class="text-xl font-bold">Curtains</h1>

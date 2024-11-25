@@ -1,427 +1,573 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FractArt Controller</title>
-  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>proyector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900 ">
-  <div class="container mx-auto p-6 space-y-8">
-    <!-- Título -->
-    <header class="text-center">
-      <h1 class="text-4xl font-bold">Welcome FractArt</h1>
-    </header>
+<body class="bg-gray-900 text-white">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active w-72 rounded-lg p-4 mx-auto mt-4 ">
+        <div class="flex justify-center items-center mb-4">
+            <h1 class="text-2xl font-bold">FractArt</h1>
+        </div>
+        <div class="mb-8">
+            <img alt="Illustration of a smart home with a Wi-Fi symbol and cloud" class="mx-auto" height="300" src="https://storage.googleapis.com/a1aa/image/3n65hhXfKnxRBa7nVdv8t8EUjyoZMIeBjTQk5lUUF0zYoA0TA.jpg" width="300"/>
+           </div>
+           <h1 class="text-2xl font-bold mb-2">
+            Fusionando arte y matemáticas a través de la luz
+           </h1>
+           <p class="text-gray-400 mb-6">
+            Comienza a proyectar..
+           </p>
+        <div class="flex justify-center items-center mb-4">
+            <button class="bg-blue-500 text-white rounded-full px-4 py-2 hover:bg-blue-200" onclick="showScreen('welcomeScreen')">Empezar</button>
+        </div>
+    </div>
 
-    <!-- Información del proyector -->
-    <section class="bg-white shadow-md rounded-lg p-6 space-y-6">
-      <!-- Imagen del proyector y estado -->
-      <div class="flex items-center justify-between">
-        <div class="space-y-2">
-          <h2 class="text-2xl font-semibold">FractArt Projector</h2>
-          <p id="projector-status" class="text-gray-600">Estado: <span class="font-bold text-green-600">Apagado</span></p>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4 ">
+        <div class="flex justify-between items-center mb-4 ">
+           
+            <h1 class="text-xl font-bold">Bienvenido, Tom</h1>
+            <img alt="User profile picture" class="rounded-full w-10 h-10" height="40" src="https://storage.googleapis.com/a1aa/image/EEYsQwa27t7XEFqKZWrU62jxDfoS5HtvsfgIuOtQv4y3DA0TA.jpg" width="40"/>          </div>
+        <div class="bg-gray-700 rounded-lg p-4 mb-4 hover:bg-gray-600">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-home text-xl"></i>
+                <div>
+                    <h2 class="font-bold">Proyector</h2>
+                    <p class="text-sm text-gray-400">Estado del Proyector</p><p>Bateria 100%</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center hover:bg-gray-600 " onclick="showScreen('securityScreen')">
+                <i class="fas fa-palette text-2xl mb-2"></i>
+                <span>Personalizar</span>
+                <span class="text-sm text-gray-400">Ajustar Colores</span>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center hover:bg-gray-600" onclick="showScreen('accessControlScreen')">
+                <i class="fas fa-shapes text-2xl mb-2"></i>
+                <span>Generar Fractal</span>
+                <span class="text-sm text-gray-400">Vista Previa Fractal</span>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center hover:bg-gray-600" onclick="showScreen('lightingSystemScreen')">
+                <i class="fas fa-lightbulb text-2xl mb-2"></i>
+                <span>Iluminación</span>
+                <span class="text-sm text-gray-400">Ajustar Iluminación</span>
+            </div>
+          
+            <div class="bg-gray-700 rounded-lg p-4 flex flex-col items-center hover:bg-gray-600" onclick="showScreen('multimediaScreen')">
+                <i class="fas fa-tv text-2xl mb-2"></i>
+                <span>Modo Presentacion</span>
+                <span class="text-sm text-gray-400">iniciar Presentación</span>
+            </div>
+           
+        </div>
+        <div class="flex justify-around mt-4">
+            <i class="fas fa-home text-xl" onclick="showScreen('welcomeScreen')"></i>
+            <i class="fas fa-cog text-xl"></i>
+            <i class="fas fa-user text-xl"></i>
+        </div>
+    </div>
+
+    <!-- First Screen -->
+    <div id="securityScreen" class="screen w-80 bg-gray-900 rounded-lg p-6 mx-auto mt-4">
+        <div class="flex justify-between items-center mb-4">
+            <i class="fas fa-arrow-left text-xl hover:text-blue-600 transition-all duration-300" onclick="showScreen('welcomeScreen')"></i>
+           
+        </div>
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Light Control</title>
+                <script src="https://cdn.tailwindcss.com"></script>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+                    body {
+                        font-family: 'Roboto', sans-serif;
+                    }
+                    .color-wheel {
+                        background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
+                        border-radius: 50%;
+                        width: 200px;
+                        height: 200px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        position: relative;
+                    }
+                    .color-wheel::before {
+                        content: '';
+                        position: absolute;
+                        width: 160px;
+                        height: 160px;
+                        background: #000;
+                        border-radius: 50%;
+                    }
+                    .color-wheel .icon {
+                        position: relative;
+                        z-index: 1;
+                        color: white;
+                        font-size: 24px;
+                    }
+                    .switch {
+                        position: relative;
+                        display: inline-block;
+                        width: 34px;
+                        height: 20px;
+                    }
+                    .switch input {
+                        opacity: 0;
+                        width: 0;
+                        height: 0;
+                    }
+                    .slider {
+                        position: absolute;
+                        cursor: pointer;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background-color: #ccc;
+                        transition: .4s;
+                        border-radius: 34px;
+                    }
+                    .slider:before {
+                        position: absolute;
+                        content: "";
+                        height: 12px;
+                        width: 12px;
+                        left: 4px;
+                        bottom: 4px;
+                        background-color: white;
+                        transition: .4s;
+                        border-radius: 50%;
+                    }
+                    input:checked + .slider {
+                        background-color: #4CAF50;
+                    }
+                    input:checked + .slider:before {
+                        transform: translateX(14px);
+                    }
+                </style>
+            </head>
+            <body class="screen w-80 bg-gray-800 rounded-lg p-6 mx-auto mt-4">
+               
+                  
+                        
+                        <div class="text-center flex flex-col items-center justify-center">
+                            <h1 class="text-lg font-medium mb-4">Personalizar</h1>
+                            <p class="text-sm text-gray-400">Proyección</p>
+                        </div>
+                        
+                       
+                    
+                    <div class="flex justify-center mb-4">
+                        <div class="color-wheel" id="colorWheel">
+                            <i class="fas fa-bolt icon"></i>
+                        </div>
+                    </div>
+                    <div class="text-center mb-4">
+                        <p class="text-gray-400">Select Color</p>
+                        <input type="color" id="colorPicker" class="w-full h-10 mt-2">
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <p class="text-gray-400">Intensity <span id="intensityValue">72%</span></p>
+                        <input type="range" class="w-2/3" value="72" id="intensityRange">
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h2 class="text-lg font-medium">Automatico</h2>
+                            <p class="text-sm text-gray-400">Estblecer de modo aleatorio los colores</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked id="powerSwitch">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="flex justify-between">
+                        <div class="flex flex-col items-center">
+                            <div class="bg-gray-800 p-3 rounded-full mb-2">
+                                <i class="fas fa-cog text-white"></i>
+                            </div>
+                            <p class="text-sm text-gray-400">Custom</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="bg-gray-800 p-3 rounded-full mb-2">
+                                <i class="fas fa-sun text-white"></i>
+                            </div>
+                            <p class="text-sm text-gray-400">Bright</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="bg-gray-800 p-3 rounded-full mb-2">
+                                <i class="fas fa-moon text-white"></i>
+                            </div>
+                            <p class="text-sm text-gray-400">Dimmed</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="bg-gray-800 p-3 rounded-full mb-2">
+                                <i class="fas fa-adjust text-white"></i>
+                            </div>
+                            <p class="text-sm text-gray-400">Gradient</p>
+                        </div>
+                   
+                </div>
+            
+                <script>
+                    document.getElementById('intensityRange').addEventListener('input', function() {
+                        document.getElementById('intensityValue').textContent = this.value + '%';
+                    });
+            
+                    document.getElementById('powerSwitch').addEventListener('change', function() {
+                        if (this.checked) {
+                            document.body.classList.remove('bg-gray-800');
+                            document.body.classList.add('bg-black');
+                        } else {
+                            document.body.classList.remove('bg-black');
+                            document.body.classList.add('bg-gray-800');
+                        }
+                    });
+            
+                    document.getElementById('colorPicker').addEventListener('input', function() {
+                        const color = this.value;
+                        document.getElementById('colorWheel').style.background = color;
+                    });
+                </script>
+            </body>
+            </html>
+        <div class="flex justify-around mt-4">
+            <i class="fas fa-home text-xl" onclick="showScreen('welcomeScreen')"></i>
+            <i class="fas fa-cog text-xl"></i>
+            <i class="fas fa-user text-xl"></i>
+        </div>
+    </div>
+
+    <!-- Second Screen -->
+    <div id="accessControlScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4">
+        <div class="flex justify-between items-center mb-4">
+            <i class="fas fa-arrow-left text-xl hover:text-blue-600 transition-all duration-300" onclick="showScreen('welcomeScreen')"></i>
+            <h1 class="text-xl font-bold">Generar Fractal</h1>
+            <i class="fas fa-ellipsis-v text-xl hover:text-blue-600 transition-all duration-300"></i>
         </div>
         
-        <img src="./proyector.png" alt="Proyector" class="w-24 h-24 rounded-lg shadow-lg">
-      </div>
-
-      <!-- Indicador de batería -->
-      <div>
-        <label class="block text-gray-600 text-sm mb-2">Batería</label>
-        <div class="flex items-center space-x-4">
-          <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-            <div class="bg-green-500 h-full rounded-full" style="width: 80%;"></div>
+        <div class="bg-gray-700 shadow-md rounded-lg p-4 mb-6 mt-3 shadow">
+            <h2 class="text-xl font-bold text-center">Selecciona tu Fractal</h2>
+            <select id="fractal-selector" class="w-full p-2 mt-2 bg-gray-800 border border-gray-600 rounded-md">
+              <option value="mandelbrot">Nebulosa</option>
+              <option value="julia">Flores de Cristal</option>
+              <option value="sierpinski">El portal Infinito</option>
+            </select>
           </div>
-          <span class="text-gray-600 font-semibold">80%</span>
+      
+          <!-- Generador de fractales -->
+          <section class="bg-gray-700 shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4">Generador de Fractales</h2>
+            <div class="relative">
+              <canvas id="fractal-canvas" width="500" height="500" class="w-full h-64 bg-gray-700 rounded-md"></canvas>
+            </div>
+            <div class="flex items-center justify-center mt-4">
+              <button id="generate-button" class="bg-purple-500 hover:bg-purple-700 text-white px-6 py-3 rounded-full flex items-center transition">
+                Generar Fractal
+              </button>
+            </div>
+          </section>
+        
+        <div class="flex justify-around mt-4">
+            <i class="fas fa-home text-xl" onclick="showScreen('welcomeScreen')"></i>
+            <i class="fas fa-cog text-xl"></i>
+            <i class="fas fa-user text-xl"></i>
         </div>
-      </div>
+    </div>
 
-      <!-- Botón de encendido con hover -->
-      <div class="flex items-center justify-center">
-        <button id="power-button" class="bg-gray-200 hover:bg-green-500 text-gray-900 px-6 py-3 rounded-full flex items-center transition">
-          <img src="./systemshutdown_104277.svg" alt="Encender/Apagar" class="w-8 h-8 mr-2">
-          <span id="power-text">Encender</span>
-        </button>
-      </div>
-
-      <!-- Botón de transmitir -->
-      <div class="flex items-center justify-center mt-6">
-        <button id="connect-button" class="bg-blue-200 hover:bg-blue-500 text-white px-6 py-3 rounded-full flex items-center transition">
-          <span id="connect-text">Buscar y Conectar</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- Ajustes del fractal -->
-    <section class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-2xl font-semibold mb-4">Ajustar Fractal</h2>
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Zoom Slider -->
-        <div>
-          <label class="block text-sm mb-2 text-gray-600">Zoom</label>
-          <input type="range" id="zoom-slider" min="1" max="10" step="0.1" value="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none focus:outline-none">
-          <p id="zoom-value" class="mt-2 text-sm text-gray-400">Zoom: 1</p>
-        </div>
-        <!-- Color Picker -->
-        <div>
-          <label class="block text-sm mb-2 text-gray-600">Color</label>
-          <input type="color" id="color-picker" class="w-full h-10 bg-gray-100 border border-gray-300 rounded-md">
+    <!-- Third Screen -->
+    <div id="lightingSystemScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4">
+        <div class="flex justify-between items-center mb-4">
+            <i class="fas fa-arrow-left text-xl hover:text-blue-600 transition-all duration-300" onclick="showScreen('welcomeScreen')"></i>
+            <h1 class="text-xl font-bold">Proyeccion del Fractal</h1>
+            <i class="fas fa-ellipsis-v text-xl hover:text-blue-600 transition-all duration-300"></i>
         </div>
 
-      </div>
-        <div class="grid grid-cols-1 gap-4 mt-6"> <!-- Cambié grid-cols-3 a grid-cols-1 -->
-          <!-- Parte Real -->
-          <div>
-            <label class="block text-sm mb-2 text-gray-600">Parte Real (c)</label>
-            <input type="number" id="real-part" step="0.01" class="w-full p-2 bg-gray-100 border border-gray-300 rounded-md" value="-0.7">
-          </div>
-          <!-- Parte Imaginaria -->
-          <div>
-            <label class="block text-sm mb-2 text-gray-600">Parte Imaginaria (c)</label>
-            <input type="number" id="imaginary-part" step="0.01" class="w-full p-2 bg-gray-100 border border-gray-300 rounded-md" value="0.27015">
-          </div>
-          <!-- Iteraciones -->
-          <div>
-            <label class="block text-sm mb-2 text-gray-600">Número de Iteraciones</label>
-            <input type="number" id="iterations" class="w-full p-2 bg-gray-100 border border-gray-300 rounded-md" value="1000">
-          </div>
-      </div>
-    </section>
+        <!-- Proyeccion Programada -->
+        <div class="bg-gray-700 rounded-lg p-4 mb-4">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-white">Proyeccion Programada</span>
+                <i class="fas fa-clock text-xl hover:text-green-500 transition-all duration-300"></i>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-white">Inicio</span>
+                <span class="text-white">6:00 AM</span>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-white">Fin</span>
+                <span class="text-white">10:00 PM</span>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-white">Potencia Maxima</span>
+                <span class="text-white">800W</span>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-white">Horas de Uso</span>
+                <span class="text-white">256</span>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-white">Promedio Diario</span>
+                <span class="text-white">5.4</span>
+            </div>
+        </div>
+
+        <!-- Colores Fractales -->
+        <div class="bg-gray-700 rounded-lg p-4 mb-4">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-white">Colores Fractales</span>
+                <div class="w-16 h-8 bg-gradient-to-r from-red-500 to-blue-500 rounded-full hover:scale-105 transition-all duration-300"></div>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-white">Tonalidad</span>
+                <div class="w-16 h-8 bg-gradient-to-r from-blue-500 to-yellow-500 rounded-full hover:scale-105 transition-all duration-300"></div>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-white">Brillo del Proyector</span>
+                <div class="w-16 h-8 bg-gradient-to-r from-gray-500 to-white rounded-full hover:scale-105 transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <!-- Botón de encendido -->
+        <div class="flex justify-between items-center bg-gray-700 rounded-lg p-2">
+            <span class="text-white">Apagado</span>
+            <button class="bg-gray-600 text-white rounded-full px-4 py-1 transition-all duration-300 hover:bg-gray-500 hover:scale-105">
+                Encendido
+            </button>
+        </div>
+
+        <!-- Íconos del menú -->
+        <div class="flex justify-around mt-4">
+            <i class="fas fa-home text-xl hover:text-blue-500 transition-all duration-300" onclick="showScreen('welcomeScreen')"></i>
+            <i class="fas fa-cog text-xl hover:text-blue-500 transition-all duration-300"></i>
+            <i class="fas fa-user text-xl hover:text-blue-500 transition-all duration-300"></i>
+        </div>
+    </div>
 
 
-    <!-- Opciones de fractales -->
-    <section class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-2xl font-semibold mb-4">Seleccionar Fractal</h2>
-      <select id="fractal-selector" class="w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
-        <option value="mandelbrot">Mandelbrot</option>
-        <option value="julia">Julia</option>
-        <option value="sierpinski">Sierpinski</option>
-      </select>
-    </section>
+    <!-- Fourth Screen -->
+    <div id="climateControlScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4">
+        <div class="flex justify-between items-center mb-4">
+            <i class="fas fa-arrow-left text-xl" onclick="showScreen('welcomeScreen')"></i>
+            <h1 class="text-xl font-bold">Climate Control</h1>
+            <i class="fas fa-ellipsis-v text-xl hover:text-blue-600 transition-all duration-300"></i>
+        </div>
+        <div class="bg-gray-700 rounded-lg p-4 mb-4">
+            <div class="flex justify-between items-center mb-2">
+                <span>Temperature</span>
+                <span>82°F</span>
+            </div>
+        </div>
+        <div class="flex justify-around mt-4">
+            <i class="fas fa-home text-xl" onclick="showScreen('welcomeScreen')"></i>
+            <i class="fas fa-cog text-xl"></i>
+            <i class="fas fa-user text-xl"></i>
+        </div>
+    </div>
 
-    <!-- Generador de fractales -->
-    <section class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-2xl font-semibold mb-4">Generador de Fractales</h2>
-      <div class="relative">
-        <canvas id="fractal-canvas" class="w-full h-64 bg-gray-700 rounded-md"></canvas>
-        <p class="absolute bottom-2 right-2 text-gray-400 text-sm">Zoom: <span id="zoom-label">1</span></p>
-      </div>
-      <div class="flex items-center justify-center mt-4">
-        <button id="generate-button" class="bg-purple-500 hover:bg-purple-700 text-white px-6 py-3 rounded-full flex items-center transition">
-          Generar Fractal
-        </button>
-      </div>
-    </section>
-
-
-    <!-- Tiempo de duración -->
-    <section class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-2xl font-semibold mb-4">Tiempo de duración</h2>
-      <input type="number" id="duration" placeholder="Duración en horas" class="w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
-      <div id="time-counter" class="text-sm text-gray-600 mt-2"></div>
-    </section>
-
-    <!-- Modo de presentación -->
-    <section class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-2xl font-semibold mb-4">Modo Presentación</h2>
-      <label class="inline-flex items-center">
-        <input type="checkbox" id="presentation-mode" class="form-checkbox h-5 w-5 text-blue-600">
-        <span class="ml-2 text-gray-600">Cambiar automáticamente entre fractales</span>
-      </label>
-    </section>
-  </div>
-
-  <script>
-    // Botón de encendido
-    const powerButton = document.getElementById('power-button');
-    const powerText = document.getElementById('power-text');
-    const projectorStatus = document.getElementById('projector-status');
-    let isOn = false;
-
-    powerButton.addEventListener('click', () => {
-      isOn = !isOn;
-      powerButton.classList.toggle('bg-green-500', isOn);
-      powerButton.classList.toggle('bg-gray-200', !isOn);
-      powerText.textContent = isOn ? 'Apagar' : 'Encender';
-      projectorStatus.innerHTML = `Estado: <span class="${isOn ? 'text-green-600' : 'text-red-600'} font-bold">${isOn ? 'Encendido' : 'Apagado'}</span>`;
-    });
-
-    // Simulación de conexión
-    const connectButton = document.getElementById('connect-button');
-    const connectText = document.getElementById('connect-text');
-
-    connectButton.addEventListener('click', () => {
-      connectText.textContent = 'Buscando...';
-      connectButton.disabled = true;
-
-      // Simulamos la búsqueda de dispositivos
-      setTimeout(() => {
-        connectText.textContent = 'Conectando...';
-
-        setTimeout(() => {
-          // Simulación de conexión exitosa
-          connectText.textContent = 'Conectado';
-          connectButton.classList.toggle('bg-blue-500', true);
-          connectButton.classList.toggle('bg-blue-200', false);
-          connectButton.disabled = false;
-
-          // Cambiar estado del proyector a encendido
-          if (!isOn) {
-            powerButton.click(); // Encender el proyector si no está encendido
-          }
-        }, 2000); // Simula el tiempo de conexión
-      }, 2000); // Simula el tiempo de búsqueda
-    });
-
-    // Zoom Slider
-    const zoomSlider = document.getElementById('zoom-slider');
-    const zoomValue = document.getElementById('zoom-value');
-    const zoomLabel = document.getElementById('zoom-label');
-    zoomSlider.addEventListener('input', () => {
-      const zoom = zoomSlider.value;
-      zoomValue.textContent = `Zoom: ${zoom}`;
-      zoomLabel.textContent = zoom;
-      drawFractal(zoom); // Actualizar el fractal con el nuevo zoom
-    });
-
-    // Generador de fractales
-    const canvas = document.getElementById('fractal-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
-
-    const colorPicker = document.getElementById('color-picker');
-    const fractalSelector = document.getElementById('fractal-selector');
-    const generateButton = document.getElementById('generate-button');
-    const realPartInput = document.getElementById('real-part');
-    const imaginaryPartInput = document.getElementById('imaginary-part');
-    const iterationsInput = document.getElementById('iterations');
-
-    // Cambiar el evento del selector de fractales
-    fractalSelector.addEventListener('change', () => {
-      const zoom = parseFloat(zoomSlider.value);
-      const baseColor = colorPicker.value;
-      const realPart = parseFloat(realPartInput.value);
-      const imaginaryPart = parseFloat(imaginaryPartInput.value);
-      const iterations = parseInt(iterationsInput.value, 10);
-      drawFractal(fractalSelector.value, zoom, baseColor, realPart, imaginaryPart, iterations);
-    });
-
-    // Dibuja el fractal inicial
-    drawFractal('mandelbrot', 1, '#0000ff', -0.7, 0.27015, 1000);
+    <!-- Fifth Screen -->
+    <div id="multimediaScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4  ">
+        <div class="flex justify-between items-center mb-4">
+            <i class="fas fa-arrow-left text-xl hover:text-blue-600 transition-all duration-300" onclick="showScreen('welcomeScreen')"></i>
+            <h1 class="text-xl font-bold">Modo Presentación</h1>
+            <i class="fas fa-ellipsis-v text-xl hover:text-blue-600 transition-all duration-300"></i>
+        </div>
+        <div class="bg-gray-700 shadow-md rounded-lg mb-6 mt-3 shadow h-96">
+            <h2 class="text-sm font-bold text-center ">¿Deseas habilitar el cambio automático entre fractales?</h2>
+            <div class="flex justify-around">
+                <button class="bg-green-500 mt-3 mb-3 text-white px-6 py-3 text-lg font-semibold rounded-lg shadow-lg transform transition-all duration-300 hover:bg-green-600 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-300">
+                    Sí
+                </button>
+                <button class="bg-red-500 mt-3 mb-3 text-white px-6 py-3 text-lg font-semibold rounded-lg shadow-lg transform transition-all duration-300 hover:bg-red-600 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300">
+                    No
+                </button>
+            </div>
+        </div>
+        <div class="flex justify-around mt-4">
+            <i class="fas fa-home text-xl" onclick="showScreen('welcomeScreen')"></i>
+            <i class="fas fa-cog text-xl"></i>
+            <i class="fas fa-user text-xl"></i>
+        </div>
+    </div>
 
 
+    <!-- Sixth Screen -->
+    <div id="curtainsScreen" class="screen w-72 bg-gray-900 rounded-lg p-4 mx-auto mt-4">
+        <div class="flex justify-between items-center mb-4">
+            <i class="fas fa-arrow-left text-xl" onclick="showScreen('welcomeScreen')"></i>
+            <h1 class="text-xl font-bold">Curtains</h1>
+            <i class="fas fa-ellipsis-v text-xl"></i>
+        </div>
+        <div class="bg-gray-700 rounded-lg p-4 mb-4">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-blinds text-xl"></i>
+                <div>
+                    <h2 class="font-bold">Curtains</h2>
+                    <p class="text-sm text-gray-400">Closed</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-around mt-4">
+            <i class="fas fa-home text-xl" onclick="showScreen('welcomeScreen')"></i>
+            <i class="fas fa-cog text-xl"></i>
+            <i class="fas fa-user text-xl"></i>
+        </div>
+    </div>
+    
 
-    generateButton.addEventListener('click', () => {
-      const zoom = parseFloat(zoomSlider.value);
-      const baseColor = colorPicker.value; // Color seleccionado por el usuario
-      const fractalType = fractalSelector.value;
-      const realPart = parseFloat(realPartInput.value);
-      const imaginaryPart = parseFloat(imaginaryPartInput.value);
-      const iterations = parseInt(iterationsInput.value, 10);
+    <script>
+         // Generador de fractales
+        let ctx; 
+        let canvas;
+        
 
-      drawFractal(fractalType, zoom, baseColor, realPart, imaginaryPart, iterations);
-    });
+        document.addEventListener('DOMContentLoaded', function() {
+            canvas = document.getElementById('fractal-canvas');
+            ctx = canvas.getContext('2d');
+            const fractalSelector = document.getElementById('fractal-selector');
 
-    function hexToRgb(hex) {
-      const bigint = parseInt(hex.slice(1), 16);
-      const r = (bigint >> 16) & 255;
-      const g = (bigint >> 8) & 255;
-      const b = bigint & 255;
-      return { r, g, b };
-    }
+            function drawFractal(type) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
-
-    function getColor(iteration, maxIterations, baseColor) {
-      const { r, g, b } = hexToRgb(baseColor); // Convertimos el color base a RGB
-      const t = iteration / maxIterations; // Proporción de iteraciones completadas
-      const alpha = Math.pow(t, 0.5); // Opcional: ajustar la progresión visual
-
-      // Interpolamos los valores de color y retornamos en formato RGBA
-      return `rgba(${Math.floor(r * t)}, ${Math.floor(g * t)}, ${Math.floor(b * t)}, ${alpha})`;
-    }
-
-
-    function drawFractal(type, zoom, color, realPart, imaginaryPart, iterations) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el lienzo
-      ctx.fillStyle = color; // Establecer el color seleccionado
-
-      if (type === 'mandelbrot') {
-        drawMandelbrot(zoom, color, realPart, imaginaryPart, iterations);
-      } else if (type === 'julia') {
-        drawJulia(zoom, color, realPart, imaginaryPart, iterations);
-      } else if (type === 'sierpinski') {
-        drawSierpinski(color); // No necesita zoom
-      }
-    }
-
-
-    function drawMandelbrot(zoom, baseColor, realPart, imaginaryPart, iterations) {
-        const maxIterations = iterations;
-        const width = canvas.width;
-        const height = canvas.height;
-
-        // Centramos el fractal en el medio del canvas
-        const centerX = width / 2;
-        const centerY = height / 2;
-
-        // Escala del conjunto de Mandelbrot
-        const scaleX = 3 / zoom;  // Reduce el valor de escala para hacerlo más grande
-        const scaleY = 2.0 / zoom;  // Ajusta este valor según cómo quieras la proporción
-
-        for (let x = 0; x < width; x++) {
-            for (let y = 0; y < height; y++) {
-                // Convertimos las coordenadas pixel a coordenadas complejas
-                const cRe = (x - centerX) / (width / 3) * scaleX + realPart;
-                const cIm = (y - centerY) / (height / 2.0) * scaleY + imaginaryPart;
-
-                let zx = 0, zy = 0;
-                let iteration = 0;
-
-                // Iteración para calcular el conjunto de Mandelbrot
-                while (zx * zx + zy * zy < 4 && iteration < maxIterations) {
-                    const temp = zx * zx - zy * zy + cRe;
-                    zy = 2.0 * zx * zy + cIm;
-                    zx = temp;
-                    iteration++;
+                if (type === 'mandelbrot') {
+                    drawMandelbrot();
+                } else if (type === 'julia') {
+                    drawJulia();
+                } else if (type === 'sierpinski') {
+                    drawSierpinski();
                 }
-
-                // Asignar colores según el resultado
-                if (iteration === maxIterations) {
-                    // Puntos dentro del conjunto: usa el color base
-                    ctx.fillStyle = baseColor;
-                } else {
-                    // Puntos fuera del conjunto: usa un degradado
-                    ctx.fillStyle = getColor(iteration, maxIterations, baseColor);
-                }
-
-                // Dibujamos un punto en las coordenadas correspondientes
-                ctx.fillRect(x, y, 1, 1);
             }
+
+            // Función para dibujar Mandelbrot
+            function drawMandelbrot() {
+                const width = canvas.width;
+                const height = canvas.height;
+                const maxIter = 100;
+
+                for (let x = 0; x < width; x++) {
+                    for (let y = 0; y < height; y++) {
+                        let zx = 0, zy = 0;
+                        const cx = (x - width / 2) / (width / 4);
+                        const cy = (y - height / 2) / (height / 4);
+                        let iter = 0;
+
+                        while (zx * zx + zy * zy < 4 && iter < maxIter) {
+                            const temp = zx * zx - zy * zy + cx;
+                            zy = 2.0 * zx * zy + cy;
+                            zx = temp;
+                            iter++;
+                        }
+
+                        const colorValue = iter === maxIter ? 0 : (iter * 255 / maxIter);
+                        ctx.fillStyle = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
+                        ctx.fillRect(x, y, 1, 1);
+                    }
+                }
+            }
+
+            // Función para dibujar Julia
+            function drawJulia() {
+                const width = canvas.width;
+                const height = canvas.height;
+                const maxIter = 100;
+                const realPart = -0.7;
+                const imaginaryPart = 0.27015;
+
+                for (let x = 0; x < width; x++) {
+                    for (let y = 0; y < height; y++) {
+                        let zx = (x - width / 2) / (width / 4);
+                        let zy = (y - height / 2) / (height / 4);
+                        let iter = 0;
+
+                        while (zx * zx + zy * zy < 4 && iter < maxIter) {
+                            const temp = zx * zx - zy * zy + realPart;
+                            zy = 2.0 * zx * zy + imaginaryPart;
+                            zx = temp;
+                            iter++;
+                        }
+
+                        const colorValue = iter === maxIter ? 0 : (iter * 255 / maxIter );
+                        ctx.fillStyle = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
+                        ctx.fillRect(x, y, 1, 1);
+                    }
+                }
+            }
+
+            // Función para dibujar el Triángulo de Sierpinski
+            function drawSierpinski() {
+                const width = canvas.width;
+                const height = canvas.height;
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = 'white';
+                drawTriangle(width / 2, 10, width / 4, height - 10, width * 3 / 4, height - 10, 5);
+            }
+
+            function drawTriangle(x1, y1, x2, y2, x3, y3, depth) {
+                if (depth === 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.lineTo(x3, y3);
+                    ctx.closePath();
+                    ctx.fill();
+                } else {
+                    const mid1 = [(x1 + x2) / 2, (y1 + y2) / 2];
+                    const mid2 = [(x2 + x3) / 2, (y2 + y3) / 2];
+                    const mid3 = [(x1 + x3) / 2, (y1 + y3) / 2];
+                    drawTriangle(x1, y1, mid1[0], mid1[1], mid3[0], mid3[1], depth - 1);
+                    drawTriangle(mid1[0], mid1[1], x2, y2, mid2[0], mid2[1], depth - 1);
+                    drawTriangle(mid3[0], mid3[1], mid2[0], mid2[1], x3, y3, depth - 1);
+                }
+            }
+
+            // Evento para generar el fractal al hacer clic en el botón
+            document.getElementById('generate-button').addEventListener('click', () => {
+                const selectedFractal = fractalSelector.value;
+                drawFractal(selectedFractal);
+            });
+        });
+
+            
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
         }
-    }
+      
+      
+          // Escuchar cambios en el selector y generar el fractal automáticamente
+          fractalSelector.addEventListener('change', () => {
+            const selectedFractal = fractalSelector.value;
+            generateFractal(selectedFractal);
+          });
+        function toggleMenu() {
+            // Implement menu toggle functionality if needed
 
-
-
-
-
-
-    function drawJulia(zoom, baseColor, realPart, imaginaryPart, iterations) {
-      const maxIterations = iterations;
-      const width = canvas.width;
-      const height = canvas.height;
-
-      for (let x = 0; x < width; x++) {
-        for (let y = 0; y < height; y++) {
-          // Coordenadas iniciales del plano complejo
-          let zx = 1.5 * (x - width / 2) / (0.5 * zoom * width);
-          let zy = (y - height / 2) / (0.5 * zoom * height);
-
-          const cRe = realPart; // c es constante (real)
-          const cIm = imaginaryPart; // c es constante (imaginario)
-
-          let iteration = 0;
-
-          while (zx * zx + zy * zy < 4 && iteration < maxIterations) {
-            let temp = zx * zx - zy * zy + cRe;
-            zy = 2.0 * zx * zy + cIm;
-            zx = temp;
-            iteration++;
-          }
-
-          ctx.fillStyle = iteration === maxIterations ? 'black' : getColor(iteration, maxIterations, baseColor);
-          ctx.fillRect(x, y, 1, 1);
         }
-      }
-    }
 
-
-    function drawSierpinski(color) {
-      // Dibujar el fractal de Sierpinski (triángulo)
-      ctx.fillStyle = color;
-      drawTriangle(0, canvas.height, canvas.width, canvas.height, canvas.width / 2, 0, 7); // Recursión
-    }
-
-    function drawTriangle(x1, y1, x2, y2, x3, y3, depth) {
-      if (depth === 0) {
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.lineTo(x3, y3);
-        ctx.closePath();
-        ctx.fill();
-      } else {
-        const mx1 = (x1 + x2) / 2;
-        const my1 = (y1 + y2) / 2;
-        const mx2 = (x2 + x3) / 2;
-        const my2 = (y2 + y3) / 2;
-        const mx3 = (x1 + x3) / 2;
-        const my3 = (y1 + y3) / 2;
-
-        drawTriangle(x1, y1, mx1, my1, mx3, my3, depth - 1);
-        drawTriangle(mx1, my1, x2, y2, mx2, my2, depth - 1);
-        drawTriangle(mx3, my3, mx2, my2, x3, y3, depth - 1);
-      }
-    }
-
-
-        // Inicializar el fractal cuando se selecciona
-      fractalSelector.addEventListener('change', drawFractal);
-
-      // Dibuja el fractal inicial
-      drawFractal();
-
-      let presentationInterval;
-
-    // Agregar el evento para activar/desactivar el modo de presentación
-    document.getElementById('presentation-mode').addEventListener('change', (e) => {
-      if (e.target.checked) {
-        presentationInterval = setInterval(() => {
-          const fractals = ['mandelbrot', 'julia', 'sierpinski'];
-          const current = fractalSelector.value;
-          const nextIndex = (fractals.indexOf(current) + 1) % fractals.length;
-
-          // Cambiar al siguiente fractal
-          fractalSelector.value = fractals[nextIndex];
-
-          // Obtener el color seleccionado por el usuario
-          const selectedColor = document.getElementById('color-picker').value;
-
-          // Generar el fractal automáticamente con el color seleccionado
-          generateFractal(fractals[nextIndex], selectedColor);
-        }, 5000); // Cambiar cada 5 segundos
-      } else {
-        clearInterval(presentationInterval);
-      }
-    });
-
-    // Generar fractal según el tipo seleccionado y el color
-    function generateFractal(type, color) {
-      const zoom = 1; 
-      let realPart = 0;
-      let imaginaryPart = 0;
-      const iterations = 100;
-
-      if (type === 'julia') {
-        realPart = -0.7; // Ajusta valores predeterminados
-        imaginaryPart = 0.27015;
-      }
-
-      drawFractal(type, zoom, color, realPart, imaginaryPart, iterations);
-    }
-
-
-
-    // Escuchar cambios en el selector y generar el fractal automáticamente
-    fractalSelector.addEventListener('change', () => {
-      const selectedFractal = fractalSelector.value;
-      generateFractal(selectedFractal);
-    });
-
+    
     </script>
-  </body>
-  </html>
+</body>
+</html>
